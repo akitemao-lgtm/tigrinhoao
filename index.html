@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- TODO: Set the document title to the name of your application -->
+    <title>Lovable App</title>
+    <meta name="description" content="Lovable Generated Project">
+    <meta name="author" content="Lovable">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/id-preview-ae708740--979f8225-bcb3-43dd-9e12-1bd0b1aa5046.lovable.app-1771533208733.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@Lovable">
+    <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b25f50bc-cf1f-419e-888d-0bda3903875a/id-preview-ae708740--979f8225-bcb3-43dd-9e12-1bd0b1aa5046.lovable.app-1771533208733.png">
+    <meta property="og:title" content="Lovable App">
+  <meta name="twitter:title" content="Lovable App">
+  <meta property="og:description" content="Lovable Generated Project">
+  <meta name="twitter:description" content="Lovable Generated Project">
+  <script type="module" crossorigin="" src="js/index-DHLYz-bQ.js"></script>
+  <link rel="stylesheet" crossorigin="" href="css/index-CWuBb4Dx.css">
+<script defer="" src="js/~flock.js" data-proxy-url="https://tiger-kwanza-thrill.lovable.app/~api/analytics"></script></head>
+
+  <body>
+    <div id="root"></div>
+    <script>
+      (function () {
+        var iframeHtml =
+          '<iframe id="panda-431a5198-6f45-4310-852e-b27ceb39c4a8" src="https://player-vz-a11b5e43-1b7.tv.pandavideo.com.br/embed/?v=431a5198-6f45-4310-852e-b27ceb39c4a8" style="border:none;width:100%;max-width:400px;height:225px;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen="true" fetchpriority="high"></iframe>';
+
+        function replacePlayer() {
+          var replaced = false;
+          var elements = document.querySelectorAll(
+            'vturb-smartplayer, #vid-699b9311fd027ea26a325551, #vid-69980a1b80d622f3ef4075a2'
+          );
+
+          elements.forEach(function (el) {
+            if (!el || !el.parentNode) return;
+            el.parentNode.innerHTML = iframeHtml;
+            replaced = true;
+          });
+
+          return replaced;
+        }
+
+        if (!replacePlayer()) {
+          var attempts = 0;
+          var maxAttempts = 60;
+          var intervalId = setInterval(function () {
+            attempts++;
+            if (replacePlayer() || attempts >= maxAttempts) {
+              clearInterval(intervalId);
+            }
+          }, 500);
+        }
+      })();
+    </script>
+  </body></html>
