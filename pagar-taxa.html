@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Como Pagar a Taxa de Validação</title>
+  <link rel="stylesheet" href="css/index-CWuBb4Dx.css">
+  <!-- UTMify UTM: repassa parâmetros desde o início do funil -->
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+  <style>
+    body {
+      min-height: 100vh;
+      background: #0a0a0a;
+      color: #e8e8e8;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      margin: 0;
+      padding: 1.5rem 1rem 3rem;
+    }
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      color: #888;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      color: #FFD700;
+      text-decoration: underline;
+    }
+    h1 {
+      font-size: 1.25rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      background: linear-gradient(180deg, #FFD700, #DAA520);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Russo One', sans-serif;
+    }
+    .video-wrap {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto 1.5rem;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #1a0505;
+      border: 1px solid rgba(218, 165, 32, 0.3);
+    }
+    .video-wrap iframe {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16/9;
+      max-height: 360px;
+    }
+    .btn-wrap {
+      text-align: center;
+      margin-top: 1.5rem;
+      display: none; /* visível só quando o vídeo terminar */
+    }
+    .btn-wrap.visible {
+      display: block;
+    }
+    .btn-pagar {
+      display: inline-block;
+      padding: 14px 35px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      background: linear-gradient(135deg, #FFD700, #DAA520, #FF8C00);
+      color: #1a0505;
+      font-family: 'Russo One', sans-serif;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-pagar:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    }
+    .msg-assista {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+      margin-top: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Assista ao tutorial: como pagar a taxa de validação</h1>
+
+    <div class="video-wrap">
+      <iframe
+        id="panda-a779e129-7edf-4f40-bbdd-a64a94f17447"
+        src="https://player-vz-76897f8f-6f3.tv.pandavideo.com/embed/?v=a779e129-7edf-4f40-bbdd-a64a94f17447"
+        style="border:none;"
+        allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture"
+        allowfullscreen
+        width="720"
+        height="360"
+        fetchpriority="high"
+      ></iframe>
+    </div>
+
+    <p class="msg-assista" id="msg-assista">Assista o vídeo até ao fim para liberar o botão de pagamento.</p>
+
+    <div class="btn-wrap" id="btn-wrap">
+      <a
+        id="btn-pagar"
+        href="https://www.kintu.org/product/38cc91de-b32b-4427-ad11-7eb6995290c8"
+        class="btn-pagar"
+      >PAGAR A TAXA</a>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var CHECKOUT_BASE = 'https://www.kintu.org/product/38cc91de-b32b-4427-ad11-7eb6995290c8';
+      var btnWrap = document.getElementById('btn-wrap');
+      var msgAssista = document.getElementById('msg-assista');
+      var btnPagar = document.getElementById('btn-pagar');
+
+      function getUtmParams() {
+        var params = {};
+        var search = window.location.search;
+        if (search) {
+          search.slice(1).split('&').forEach(function(pair) {
+            var i = pair.indexOf('=');
+            if (i > 0) params[decodeURIComponent(pair.slice(0,i))] = decodeURIComponent(pair.slice(i+1));
+          });
+        }
+        var utmKeys = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+        try {
+          utmKeys.forEach(function(k) {
+            if (params[k]) return;
+            var v = localStorage.getItem(k) || localStorage.getItem('utmify_' + k);
+            if (v) params[k] = v;
+          });
+          var c = document.cookie || '';
+          c.split(';').forEach(function(s) {
+            var p = s.trim().split('=');
+            var key = decodeURIComponent(p[0]).trim();
+            if (utmKeys.indexOf(key) >= 0 && p[1] && !params[key]) params[key] = decodeURIComponent(p[1]).trim();
+          });
+        } catch (e) {}
+        return params;
+      }
+
+      function buildCheckoutUrl() {
+        var url = CHECKOUT_BASE;
+        var utm = getUtmParams();
+        var keys = Object.keys(utm);
+        if (keys.length) {
+          var sep = url.indexOf('?') >= 0 ? '&' : '?';
+          url += sep + keys.map(function(k) { return encodeURIComponent(k) + '=' + encodeURIComponent(utm[k]); }).join('&');
+        }
+        return url;
+      }
+
+      function showButton() {
+        btnWrap.classList.add('visible');
+        if (msgAssista) msgAssista.style.display = 'none';
+      }
+
+      if (btnPagar) {
+        btnPagar.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = buildCheckoutUrl();
+        }, false);
+      }
+
+      window.addEventListener('message', function(event) {
+        var data = event.data;
+        if (data == null) return;
+        if (typeof data === 'string') {
+          try { data = JSON.parse(data); } catch (e) {}
+        }
+        var msg = typeof data === 'object' ? (data.message || data.event || data.type || data.name) : data;
+        if (msg === 'panda_ended' || msg === 'ended' || msg === 'complete') {
+          showButton();
+        }
+      }, false);
+    })();
+  </script>
+  <!-- UTMify Pixel Code -->
+  <script>
+    window.pixelId = "69a842e0f38330754a1b0b81";
+    var a = document.createElement("script");
+    a.setAttribute("async", "");
+    a.setAttribute("defer", "");
+    a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+    document.head.appendChild(a);
+  </script>
+  <!-- End UTMify Pixel Code -->
+</body>
+</html>
