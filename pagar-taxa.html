@@ -134,41 +134,53 @@
       var msgAssista = document.getElementById('msg-assista');
       var btnPagar = document.getElementById('btn-pagar');
 
+      var UTM_KEYS = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+
+      function isSafeUtmValue(val) {
+        if (typeof val !== 'string' || val.length > 256) return false;
+        if (/^\s*https?:\/\//i.test(val) || val.indexOf('://') >= 0) return false;
+        if (/^[\w\s\-\.]+$/.test(val)) return true;
+        return /^[^\s<>\"\']+$/.test(val);
+      }
+
       function getUtmParams() {
         var params = {};
         var search = window.location.search;
         if (search) {
           search.slice(1).split('&').forEach(function(pair) {
             var i = pair.indexOf('=');
-            if (i > 0) params[decodeURIComponent(pair.slice(0,i))] = decodeURIComponent(pair.slice(i+1));
+            if (i > 0) {
+              var k = decodeURIComponent(pair.slice(0,i)).trim();
+              var v = decodeURIComponent(pair.slice(i+1)).trim();
+              if (UTM_KEYS.indexOf(k) >= 0 && isSafeUtmValue(v)) params[k] = v;
+            }
           });
         }
-        var utmKeys = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
         try {
-          utmKeys.forEach(function(k) {
+          UTM_KEYS.forEach(function(k) {
             if (params[k]) return;
             var v = localStorage.getItem(k) || localStorage.getItem('utmify_' + k);
-            if (v) params[k] = v;
+            if (v && isSafeUtmValue(v)) params[k] = v;
           });
           var c = document.cookie || '';
           c.split(';').forEach(function(s) {
             var p = s.trim().split('=');
-            var key = decodeURIComponent(p[0]).trim();
-            if (utmKeys.indexOf(key) >= 0 && p[1] && !params[key]) params[key] = decodeURIComponent(p[1]).trim();
+            var key = decodeURIComponent((p[0]||'').trim());
+            var val = decodeURIComponent((p[1]||'').trim());
+            if (UTM_KEYS.indexOf(key) >= 0 && !params[key] && isSafeUtmValue(val)) params[key] = val;
           });
         } catch (e) {}
         return params;
       }
 
       function buildCheckoutUrl() {
-        var url = CHECKOUT_BASE;
+        var base = CHECKOUT_BASE;
         var utm = getUtmParams();
         var keys = Object.keys(utm);
-        if (keys.length) {
-          var sep = url.indexOf('?') >= 0 ? '&' : '?';
-          url += sep + keys.map(function(k) { return encodeURIComponent(k) + '=' + encodeURIComponent(utm[k]); }).join('&');
-        }
-        return url;
+        if (keys.length === 0) return base;
+        var sep = base.indexOf('?') >= 0 ? '&' : '?';
+        var qs = keys.map(function(k) { return encodeURIComponent(k) + '=' + encodeURIComponent(utm[k]); }).join('&');
+        return base + sep + qs;
       }
 
       function showButton() {
