@@ -127,7 +127,7 @@
       ></iframe>
     </div>
 
-    <p class="msg-assista" id="msg-assista">Assista o vídeo até ao fim para liberar o botão de pagamento.</p>
+    <p class="msg-assista" id="msg-assista">O botão de pagamento será liberado em 2 minutos.</p>
 
     <div class="btn-wrap" id="btn-wrap">
       <a
@@ -206,17 +206,7 @@
         }, false);
       }
 
-      window.addEventListener('message', function(event) {
-        var data = event.data;
-        if (data == null) return;
-        if (typeof data === 'string') {
-          try { data = JSON.parse(data); } catch (e) {}
-        }
-        var msg = typeof data === 'object' ? (data.message || data.event || data.type || data.name) : data;
-        if (msg === 'panda_ended' || msg === 'ended' || msg === 'complete') {
-          showButton();
-        }
-      }, false);
+      setTimeout(showButton, 2 * 60 * 1000);
     })();
   </script>
   <!-- UTMify Pixel Code -->
