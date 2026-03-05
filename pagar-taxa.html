@@ -27,21 +27,21 @@
       color: #e8e8e8;
       font-family: ui-sans-serif, system-ui, sans-serif;
       margin: 0;
-      padding: 0.75rem 0.5rem 2rem;
+      padding: 0.5rem 0.5rem 1rem;
       padding-left: max(0.5rem, env(safe-area-inset-left));
       padding-right: max(0.5rem, env(safe-area-inset-right));
-      padding-bottom: max(2rem, env(safe-area-inset-bottom));
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
     }
     .page {
       max-width: 100%;
       margin: 0 auto;
     }
     h1 {
-      font-size: clamp(0.95rem, 4.5vw, 1.25rem);
+      font-size: clamp(0.9rem, 4vw, 1.15rem);
       text-align: center;
-      margin: 0 0 0.75rem;
+      margin: 0 0 0.5rem;
       padding: 0 0.25rem;
-      line-height: 1.25;
+      line-height: 1.2;
       background: linear-gradient(180deg, #FFD700, #DAA520);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -50,13 +50,14 @@
     }
     .video-wrap {
       width: 100%;
-      margin: 0 auto 1rem;
+      max-width: 280px;
+      margin: 0 auto 0.5rem;
       overflow: hidden;
       background: #1a0505;
-      border-radius: 0;
+      border-radius: 8px;
       position: relative;
       aspect-ratio: 9 / 16;
-      max-height: calc(100vh - 140px);
+      max-height: min(42vh, 50vw);
     }
     .video-wrap iframe {
       position: absolute;
@@ -69,14 +70,14 @@
     }
     .msg-assista {
       text-align: center;
-      font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+      font-size: clamp(0.75rem, 2.5vw, 0.85rem);
       color: #888;
-      margin: 0.5rem 0.5rem 0;
+      margin: 0.25rem 0.5rem 0;
       padding: 0 0.25rem;
     }
     .btn-wrap {
       text-align: center;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       padding: 0 0.5rem;
       display: none;
     }
@@ -108,8 +109,8 @@
       box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
     }
     @media (min-width: 480px) {
-      body { padding: 1rem; }
-      .video-wrap { border-radius: 12px; max-height: 80vh; }
+      body { padding: 0.75rem 1rem 1rem; }
+      .video-wrap { max-width: 320px; max-height: min(45vh, 320px); border-radius: 12px; }
     }
   </style>
 </head>
