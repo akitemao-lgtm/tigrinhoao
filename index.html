@@ -47,11 +47,16 @@
 <script defer="" src="js/~flock.js" data-proxy-url="https://tiger-kwanza-thrill.lovable.app/~api/analytics"></script></head>
 
   <body>
+    <div id="vsl-video-wrap" style="position:fixed;top:0;left:0;width:100%;height:100vh;display:flex;justify-content:center;align-items:center;background:#0a0a0a;z-index:9999;">
+      <div style="position:relative;width:56.25vh;max-width:min(400px,100vw);height:100vh;aspect-ratio:9/16;background:#000;pointer-events:auto;">
+        <iframe id="panda-895afce6-44be-42cd-bf10-494f5daf2f35" src="https://player-vz-76897f8f-6f3.tv.pandavideo.com/embed/?v=895afce6-44be-42cd-bf10-494f5daf2f35" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen fetchpriority="high"></iframe>
+      </div>
+    </div>
     <div id="root"></div>
     <script>
       (function () {
         var iframeHtml =
-          '<iframe id="panda-895afce6-44be-42cd-bf10-494f5daf2f35" src="https://player-vz-76897f8f-6f3.tv.pandavideo.com/embed/?v=895afce6-44be-42cd-bf10-494f5daf2f35" style="border:none;width:100%;max-width:400px;height:225px;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen=true width="720" height="360" fetchpriority="high"></iframe>';
+          '<iframe id="panda-895afce6-44be-42cd-bf10-494f5daf2f35" src="https://player-vz-76897f8f-6f3.tv.pandavideo.com/embed/?v=895afce6-44be-42cd-bf10-494f5daf2f35" style="border:none;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen=true width="720" height="360" fetchpriority="high"></iframe>';
 
         function replacePlayer() {
           var replaced = false;
