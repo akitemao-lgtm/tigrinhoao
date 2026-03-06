@@ -48,23 +48,47 @@
       background-clip: text;
       font-family: 'Russo One', sans-serif;
     }
-    .video-wrap {
-      width: 100%;
-      margin: 0 auto 1rem;
-      overflow: hidden;
-      background: #1a0505;
-      border-radius: 0;
-      position: relative;
-      aspect-ratio: 9 / 16;
-      max-height: calc(100vh - 200px);
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.55);
     }
-    .video-wrap iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+    .modal-box {
+      position: relative;
+      z-index: 10;
+      width: calc(100% - 40px);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      text-align: center;
+      overflow-y: auto;
+      max-height: 90vh;
+      height: 700px;
+      border-radius: 1rem;
+      background: linear-gradient(180deg, rgba(20,25,35,0.95), rgba(15,18,25,0.97));
+      border: 1px solid rgba(100,120,140,0.2);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+    .modal-box h2 {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+      color: #FFC106;
+      font-family: 'Russo One', sans-serif;
+    }
+    .modal-video-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-video-wrap iframe {
       border: none;
+      width: 320px;
+      height: 550px;
       display: block;
     }
     .msg-assista {
@@ -87,7 +111,7 @@
       display: inline-block;
       width: 100%;
       max-width: 320px;
-      padding: 16px 24px;
+      padding: 14px 35px;
       border-radius: 12px;
       font-size: 1rem;
       font-weight: bold;
@@ -109,7 +133,6 @@
     }
     @media (min-width: 480px) {
       body { padding: 1rem; }
-      .video-wrap { border-radius: 12px; max-height: calc(100vh - 220px); }
     }
   </style>
 </head>
@@ -117,24 +140,30 @@
   <div class="page">
     <h1>Assista ao tutorial: como pagar a taxa de validação</h1>
 
-    <div class="video-wrap">
-      <iframe
-        id="panda-a779e129-7edf-4f40-bbdd-a64a94f17447"
-        src="https://player-vz-76897f8f-6f3.tv.pandavideo.com/embed/?v=a779e129-7edf-4f40-bbdd-a64a94f17447"
-        allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture"
-        allowfullscreen
-        fetchpriority="high"
-      ></iframe>
-    </div>
+    <div class="modal-backdrop">
+      <div class="modal-box">
+        <h2>Assista ao tutorial: como pagar a taxa de validação</h2>
 
-    <p class="msg-assista" id="msg-assista">O botão de pagamento será liberado em 2 minutos.</p>
+        <div class="modal-video-wrap">
+          <iframe
+            id="panda-408cd95b-c16e-4440-b9f7-fc557c091521"
+            src="https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=408cd95b-c16e-4440-b9f7-fc557c091521"
+            allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture"
+            allowfullscreen
+            fetchpriority="high"
+          ></iframe>
+        </div>
 
-    <div class="btn-wrap" id="btn-wrap">
-      <a
-        id="btn-pagar"
-        href="https://www.kintu.org/product/38cc91de-b32b-4427-ad11-7eb6995290c8"
-        class="btn-pagar"
-      >PAGAR A TAXA</a>
+        <p class="msg-assista" id="msg-assista">O botão de pagamento será liberado em 2 minutos.</p>
+
+        <div class="btn-wrap" id="btn-wrap">
+          <a
+            id="btn-pagar"
+            href="https://www.kintu.org/product/38cc91de-b32b-4427-ad11-7eb6995290c8"
+            class="btn-pagar"
+          >PAGAR A TAXA</a>
+        </div>
+      </div>
     </div>
   </div>
 
