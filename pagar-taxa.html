@@ -34,19 +34,7 @@
     }
     .page {
       max-width: 100%;
-      margin: 0 auto;
-    }
-    h1 {
-      font-size: clamp(0.95rem, 4.5vw, 1.25rem);
-      text-align: center;
-      margin: 0 0 0.75rem;
-      padding: 0 0.25rem;
-      line-height: 1.25;
-      background: linear-gradient(180deg, #FFD700, #DAA520);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-family: 'Russo One', sans-serif;
+      margin: 0;
     }
     .modal-backdrop {
       position: fixed;
@@ -63,32 +51,39 @@
       width: calc(100% - 40px);
       max-width: 800px;
       margin: 0 auto;
-      padding: 1.5rem;
+      padding: 1rem 1.5rem 1.5rem;
       text-align: center;
       overflow-y: auto;
-      max-height: 90vh;
-      height: 700px;
+      max-height: calc(100vh - 2rem);
       border-radius: 1rem;
       background: linear-gradient(180deg, rgba(20,25,35,0.95), rgba(15,18,25,0.97));
       border: 1px solid rgba(100,120,140,0.2);
       box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .modal-box h2 {
       font-size: 1.25rem;
       font-weight: bold;
-      margin-bottom: 1.5rem;
+      margin: 0 0 1rem;
       color: #FFC106;
       font-family: 'Russo One', sans-serif;
+      flex-shrink: 0;
     }
     .modal-video-wrap {
       display: flex;
       justify-content: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
+      flex: 1 1 auto;
+      min-height: 0;
     }
     .modal-video-wrap iframe {
       border: none;
       width: 320px;
+      max-width: 100%;
       height: 550px;
+      max-height: calc(100vh - 260px);
       display: block;
     }
     .msg-assista {
@@ -138,8 +133,6 @@
 </head>
 <body>
   <div class="page">
-    <h1>Assista ao tutorial: como pagar a taxa de validação</h1>
-
     <div class="modal-backdrop">
       <div class="modal-box">
         <h2>Assista ao tutorial: como pagar a taxa de validação</h2>
