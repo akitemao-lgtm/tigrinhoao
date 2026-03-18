@@ -50,65 +50,34 @@
     <div id="root"></div>
     <script>
       (function () {
-        var IFRAME_ID = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
-        var IFRAME_SRC =
-          "https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=012a1692-ec4c-43ae-9953-419b0d13308e";
-        var IFRAME_ALLOW =
-          "accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture";
+        var iframeHtml =
+          '<iframe id="panda-012a1692-ec4c-43ae-9953-419b0d13308e" src="https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=012a1692-ec4c-43ae-9953-419b0d13308e" style="border:none;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen=true width="720" height="360" fetchpriority="high"></iframe>';
 
-        var tries = 0;
-        var maxTries = 240; // ~2 minutes
-
-        function applyAttrs(iframe) {
-          if (!iframe) return;
-          iframe.setAttribute("id", IFRAME_ID);
-          iframe.setAttribute("src", IFRAME_SRC);
-          iframe.setAttribute("style", "border:none;");
-          iframe.setAttribute("allow", IFRAME_ALLOW);
-          iframe.setAttribute("allowfullscreen", "true");
-          iframe.setAttribute("width", "720");
-          iframe.setAttribute("height", "360");
-          iframe.setAttribute("fetchpriority", "high");
-        }
-
-        function ensureIframe() {
-          var all = Array.prototype.slice.call(
-            document.querySelectorAll(
-              'iframe[id^="panda-"], iframe[src*="pandavideo.com.br/embed/?v="]'
-            )
+        function replacePlayer() {
+          var replaced = false;
+          var elements = document.querySelectorAll(
+            'vturb-smartplayer, #vid-699b9311fd027ea26a325551, #vid-69980a1b80d622f3ef4075a2'
           );
 
-          if (all.length > 0) {
-            // Keep only one iframe and normalize it to the requested embed.
-            var first = all[0];
-            applyAttrs(first);
-            for (var i = 1; i < all.length; i++) {
-              try {
-                all[i].remove();
-              } catch (e) {}
-            }
-            return;
-          }
+          elements.forEach(function (el) {
+            if (!el || !el.parentNode) return;
+            el.parentNode.innerHTML = iframeHtml;
+            replaced = true;
+          });
 
-          // If nothing exists yet, insert it.
-          var root = document.getElementById("root") || document.body;
-          if (!root) return;
-          var existing = document.getElementById(IFRAME_ID);
-          if (existing) {
-            applyAttrs(existing);
-            return;
-          }
-
-          var iframe = document.createElement("iframe");
-          applyAttrs(iframe);
-          root.appendChild(iframe);
+          return replaced;
         }
 
-        var timer = setInterval(function () {
-          ensureIframe();
-          tries++;
-          if (tries >= maxTries) clearInterval(timer);
-        }, 500);
+        if (!replacePlayer()) {
+          var attempts = 0;
+          var maxAttempts = 60;
+          var intervalId = setInterval(function () {
+            attempts++;
+            if (replacePlayer() || attempts >= maxAttempts) {
+              clearInterval(intervalId);
+            }
+          }, 500);
+        }
       })();
     </script>
     <script>
@@ -142,6 +111,37 @@
           },
           true
         );
+      })();
+    </script>
+    <script>
+      (function () {
+        var IFRAME_ID = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
+        var tries = 0;
+        var maxTries = 120;
+
+        function forceVslIframeSize() {
+          var iframe = document.getElementById(IFRAME_ID);
+          if (!iframe) return false;
+          try {
+            iframe.setAttribute("width", "720");
+            iframe.setAttribute("height", "360");
+            iframe.setAttribute(
+              "allow",
+              "accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture"
+            );
+            iframe.setAttribute("allowfullscreen", "true");
+            iframe.setAttribute("fetchpriority", "high");
+            iframe.style.border = "none";
+          } catch (e) {}
+          return true;
+        }
+
+        if (forceVslIframeSize()) return;
+
+        var timer = setInterval(function () {
+          tries++;
+          if (forceVslIframeSize() || tries >= maxTries) clearInterval(timer);
+        }, 500);
       })();
     </script>
     <!-- UTMify Pixel Code -->
