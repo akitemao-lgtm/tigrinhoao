@@ -55,6 +55,19 @@
 
         function replacePlayer() {
           var replaced = false;
+
+          // Se o iframe do Panda já estiver no DOM, atualize diretamente (evita depender apenas
+          // dos seletores do player smart).
+          var existing = document.querySelector(
+            'iframe[id^="panda-"][src*="player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v="]'
+          );
+          if (existing) {
+            existing.id = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
+            existing.src =
+              "https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=012a1692-ec4c-43ae-9953-419b0d13308e";
+            replaced = true;
+          }
+
           var elements = document.querySelectorAll(
             'vturb-smartplayer, #vid-699b9311fd027ea26a325551, #vid-69980a1b80d622f3ef4075a2'
           );
