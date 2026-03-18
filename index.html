@@ -63,26 +63,37 @@
             var desiredId = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
 
             // Strategy 1: overlay -> slot
-            var overlay = document.querySelector(
-              "div.fixed.inset-0.overflow-y-auto"
-            );
+            var overlay = document.querySelector("div.fixed.inset-0");
             if (overlay) {
-              var slot1 = overlay.querySelector(
-                "div.w-full.rounded-2xl.overflow-hidden"
+              var candidates = overlay.querySelectorAll(
+                "div.w-full.rounded-2xl.overflow-hidden, div.rounded-2xl.overflow-hidden"
               );
-              if (slot1) {
-                if (
-                  slot1.querySelector &&
-                  slot1.querySelector('iframe#' + desiredId)
-                )
-                  return true;
 
-                // Append (don't overwrite) to avoid fighting React rendering.
-                var container = document.createElement("div");
-                container.innerHTML = iframeHtml;
-                var newIframe = container.firstChild;
-                if (newIframe) slot1.appendChild(newIframe);
-                return true;
+              if (candidates && candidates.length) {
+                for (var c = 0; c < candidates.length; c++) {
+                  var slot = candidates[c];
+                  if (!slot) continue;
+                  if (
+                    slot.querySelector &&
+                    slot.querySelector('iframe#' + desiredId)
+                  )
+                    return true;
+
+                  // Don't append if an iframe is already there (vestige / other embed).
+                  if (
+                    slot.querySelector &&
+                    slot.querySelector('iframe[src*="pandavideo.com.br/embed/?v="]')
+                  )
+                    continue;
+
+                  var container = document.createElement("div");
+                  container.innerHTML = iframeHtml;
+                  var newIframe = container.firstChild;
+                  if (newIframe) {
+                    slot.appendChild(newIframe);
+                    return true;
+                  }
+                }
               }
             }
 
@@ -102,6 +113,12 @@
                   if (
                     slot2.querySelector &&
                     slot2.querySelector('iframe#' + desiredId)
+                  )
+                    return true;
+
+                  if (
+                    slot2.querySelector &&
+                    slot2.querySelector('iframe[src*="pandavideo.com.br/embed/?v="]')
                   )
                     return true;
 
