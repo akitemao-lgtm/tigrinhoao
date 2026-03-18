@@ -56,25 +56,48 @@
         var OLD_V = "734a31b2-9349-451d-8e62-49325adb91fe";
 
         function insertIntoModal() {
-          // Modal overlay (React app) costuma renderizar um container com classes fixas.
-          // A ideia é inserir o iframe diretamente nesse "slot" do modal.
+          // A ideia é inserir o iframe no "slot" do modal do React.
+          // Como o DOM pode variar, usamos 2 estratégias: (1) localizar pelo slot dentro do overlay,
+          // (2) localizar pelo h2 do título e então buscar o container com rounded-2xl/overflow-hidden.
           try {
-            var modal = document.querySelector(
-              "div.fixed.inset-0.z-50.overflow-y-auto"
+            var desiredId = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
+
+            // Strategy 1: overlay -> slot
+            var overlay = document.querySelector(
+              "div.fixed.inset-0.overflow-y-auto"
             );
-            if (!modal) return false;
+            if (overlay) {
+              var slot1 = overlay.querySelector(
+                "div.w-full.rounded-2xl.overflow-hidden"
+              );
+              if (slot1) {
+                if (slot1.querySelector && slot1.querySelector('iframe#' + desiredId)) return true;
+                slot1.innerHTML = iframeHtml;
+                return true;
+              }
+            }
 
-            var slot = modal.querySelector("div.w-full.rounded-2xl.overflow-hidden");
-            if (!slot) return false;
+            // Strategy 2: h2 title -> nearest rounded slot
+            var h2s = document.querySelectorAll("h2");
+            for (var i = 0; i < h2s.length; i++) {
+              var txt = (h2s[i].textContent || "").toLowerCase();
+              if (txt.indexOf("assista este video") !== -1) {
+                var scope = h2s[i].closest("div") || document;
+                var slot2 =
+                  scope.querySelector &&
+                  scope.querySelector("div.w-full.rounded-2xl.overflow-hidden");
+                if (!slot2 && scope.querySelector) {
+                  slot2 = scope.querySelector("div.rounded-2xl.overflow-hidden");
+                }
+                if (slot2) {
+                  if (slot2.querySelector && slot2.querySelector('iframe#' + desiredId)) return true;
+                  slot2.innerHTML = iframeHtml;
+                  return true;
+                }
+              }
+            }
 
-            // Avoid duplicates: if the correct iframe already exists inside slot, do nothing.
-            var existing = slot.querySelector(
-              'iframe#panda-012a1692-ec4c-43ae-9953-419b0d13308e'
-            );
-            if (existing) return true;
-
-            slot.innerHTML = iframeHtml;
-            return true;
+            return false;
           } catch (e) {
             return false;
           }
@@ -121,6 +144,27 @@
         // Enforce a few times to guarantee the legacy VSL is gone.
         removeOldVslEverywhere();
         replacePlayer();
+
+        // MutationObserver: quando a modal aparece depois (por render/efeito), também injeta.
+        var observer = null;
+        try {
+          observer = new MutationObserver(function () {
+            try {
+              removeOldVslEverywhere();
+              insertIntoModal();
+              // Se já houver o iframe certo na tela, pode parar.
+              if (document.getElementById("panda-012a1692-ec4c-43ae-9953-419b0d13308e")) {
+                if (observer) observer.disconnect();
+              }
+            } catch (e) {}
+          });
+          observer.observe(document.body, { childList: true, subtree: true });
+          setTimeout(function () {
+            try {
+              if (observer) observer.disconnect();
+            } catch (e) {}
+          }, 180000); // 3 minutos
+        } catch (e) {}
 
         var attempts = 0;
         var maxAttempts = 240; // ~2 minutes
