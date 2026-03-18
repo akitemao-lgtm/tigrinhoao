@@ -52,64 +52,59 @@
       (function () {
         var OLD_IFRAME_ID = "panda-734a31b2-9349-451d-8e62-49325adb91fe";
         var OLD_V = "734a31b2-9349-451d-8e62-49325adb91fe";
-        var NEW_IFRAME_HTML =
-          '<iframe id="panda-012a1692-ec4c-43ae-9953-419b0d13308e" src="https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=012a1692-ec4c-43ae-9953-419b0d13308e" style="border:none;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen=true width="720" height="360" fetchpriority="high"></iframe>';
+        var NEW_IFRAME_ID = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
+        var NEW_SRC =
+          "https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=012a1692-ec4c-43ae-9953-419b0d13308e";
+        var NEW_ALLOW =
+          "accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture";
+        var NEW_WIDTH = "720";
+        var NEW_HEIGHT = "360";
 
         // Enforce for a bit to beat React re-injection.
         var tries = 0;
         var maxTries = 240; // ~2 minutes
 
-        function replaceLegacyIframe(iframe) {
+        function normalizeVslIframe(iframe) {
           if (!iframe) return false;
           try {
-            var parent = iframe.parentElement;
-            var container = document.createElement("div");
-            container.innerHTML = NEW_IFRAME_HTML;
-            var newIframe = container.firstChild;
-            if (!newIframe || !parent) {
-              iframe.remove();
-              return false;
-            }
-            parent.replaceChild(newIframe, iframe);
-            return true;
-          } catch (e) {
-            try {
-              iframe.remove();
-            } catch (e2) {}
-          }
-          return false;
+            iframe.setAttribute("id", NEW_IFRAME_ID);
+            iframe.setAttribute("src", NEW_SRC);
+            iframe.setAttribute("style", "border:none;");
+            iframe.setAttribute("allow", NEW_ALLOW);
+            iframe.setAttribute("allowfullscreen", "true");
+            iframe.setAttribute("width", NEW_WIDTH);
+            iframe.setAttribute("height", NEW_HEIGHT);
+            iframe.setAttribute("fetchpriority", "high");
+          } catch (e) {}
+          return true;
         }
 
-        function removeOldVsl() {
+        function ensureNewVsl() {
+          var normalized = false;
+
           var old = document.getElementById(OLD_IFRAME_ID);
-          if (old) replaceLegacyIframe(old);
+          if (old) {
+            normalized = normalizeVslIframe(old) || normalized;
+          }
 
           var legacyBySrc = document.querySelectorAll(
-            'iframe[src*="embed/?v=' + OLD_V + '"], iframe[src*="v=' + OLD_V + '"]'
+            'iframe[src*="v=' + OLD_V + '"], iframe[src*="embed/?v=' + OLD_V + '"]'
           );
           if (legacyBySrc && legacyBySrc.length) {
             legacyBySrc.forEach(function (f) {
-              replaceLegacyIframe(f);
+              normalized = normalizeVslIframe(f) || normalized;
             });
           }
-        }
 
-        function replacePlayer() {
-          var elements = document.querySelectorAll(
-            "vturb-smartplayer, #vid-699b9311fd027ea26a325551, #vid-69980a1b80d622f3ef4075a2"
-          );
-          var replaced = false;
-          elements.forEach(function (el) {
-            if (!el || !el.parentNode) return;
-            el.parentNode.innerHTML = NEW_IFRAME_HTML;
-            replaced = true;
-          });
-          return replaced;
+          // If the new iframe already exists, ensure attributes are correct.
+          var newIframe = document.getElementById(NEW_IFRAME_ID);
+          if (newIframe) normalized = normalizeVslIframe(newIframe) || normalized;
+
+          return normalized;
         }
 
         var timer = setInterval(function () {
-          removeOldVsl();
-          replacePlayer();
+          ensureNewVsl();
           tries++;
           if (tries >= maxTries) clearInterval(timer);
         }, 500);
