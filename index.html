@@ -95,7 +95,7 @@
         replacePlayer();
 
         var attempts = 0;
-        var maxAttempts = 60;
+        var maxAttempts = 240; // ~2 minutes
         var intervalId = setInterval(function () {
           removeOldVslEverywhere();
           var replaced = replacePlayer();
