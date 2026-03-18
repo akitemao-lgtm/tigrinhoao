@@ -90,18 +90,20 @@
           } catch (e) {}
         }
 
-        if (!replacePlayer()) {
-          var attempts = 0;
-          var maxAttempts = 60;
-          var intervalId = setInterval(function () {
-            removeOldVslEverywhere();
-            attempts++;
-            replacePlayer();
-            if (replacePlayer() || attempts >= maxAttempts) {
-              clearInterval(intervalId);
-            }
-          }, 500);
-        }
+        // Enforce a few times to guarantee the legacy VSL is gone.
+        removeOldVslEverywhere();
+        replacePlayer();
+
+        var attempts = 0;
+        var maxAttempts = 60;
+        var intervalId = setInterval(function () {
+          removeOldVslEverywhere();
+          var replaced = replacePlayer();
+          attempts++;
+          if (replaced || attempts >= maxAttempts) {
+            clearInterval(intervalId);
+          }
+        }, 500);
       })();
     </script>
     <script>
