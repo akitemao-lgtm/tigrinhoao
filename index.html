@@ -52,6 +52,8 @@
       (function () {
         var iframeHtml =
           '<iframe id="panda-012a1692-ec4c-43ae-9953-419b0d13308e" src="https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=012a1692-ec4c-43ae-9953-419b0d13308e" style="border:none;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen=true width="720" height="360" fetchpriority="high"></iframe>';
+        var OLD_IFRAME_ID = "panda-734a31b2-9349-451d-8e62-49325adb91fe";
+        var OLD_V = "734a31b2-9349-451d-8e62-49325adb91fe";
 
         function replacePlayer() {
           var replaced = false;
@@ -60,19 +62,41 @@
           );
 
           elements.forEach(function (el) {
-            if (!el || !el.parentNode) return;
-            el.parentNode.innerHTML = iframeHtml;
+            if (!el) return;
+            el.innerHTML = iframeHtml;
             replaced = true;
           });
 
           return replaced;
         }
 
+        function removeOldVslEverywhere() {
+          try {
+            var oldById = document.getElementById(OLD_IFRAME_ID);
+            if (oldById) oldById.remove();
+          } catch (e) {}
+
+          try {
+            var oldBySrc = document.querySelectorAll(
+              'iframe[src*="v=' + OLD_V + '"]'
+            );
+            if (oldBySrc && oldBySrc.length) {
+              oldBySrc.forEach(function (f) {
+                try {
+                  f.remove();
+                } catch (e2) {}
+              });
+            }
+          } catch (e) {}
+        }
+
         if (!replacePlayer()) {
           var attempts = 0;
           var maxAttempts = 60;
           var intervalId = setInterval(function () {
+            removeOldVslEverywhere();
             attempts++;
+            replacePlayer();
             if (replacePlayer() || attempts >= maxAttempts) {
               clearInterval(intervalId);
             }
