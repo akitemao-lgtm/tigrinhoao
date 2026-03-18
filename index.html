@@ -51,7 +51,7 @@
     <script>
       (function () {
         var iframeHtml =
-          '<iframe id="panda-734a31b2-9349-451d-8e62-49325adb91fe" src="https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=734a31b2-9349-451d-8e62-49325adb91fe" style="border:none;width:100%;max-width:400px;height:225px;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen="true" fetchpriority="high"></iframe>';
+          '<iframe id="panda-734a31b2-9349-451d-8e62-49325adb91fe" src="https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=734a31b2-9349-451d-8e62-49325adb91fe" style="border:none;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen=true width="720" height="360" fetchpriority="high"></iframe>';
 
         function replacePlayer() {
           var replaced = false;
@@ -78,6 +78,39 @@
             }
           }, 500);
         }
+      })();
+    </script>
+    <script>
+      (function () {
+        function hasPayTaxText(el) {
+          var t = (el && (el.innerText || el.textContent) || "").toLowerCase();
+          return t.indexOf("pagar") !== -1 && t.indexOf("taxa") !== -1;
+        }
+
+        function shouldRedirect(target) {
+          if (!target) return false;
+          var a = target.closest ? target.closest("a") : null;
+          if (a && typeof a.getAttribute === "function") {
+            var href = a.getAttribute("href") || "";
+            if (href.indexOf("kintu.org/") !== -1) return true;
+            if (hasPayTaxText(a)) return true;
+          }
+          if (hasPayTaxText(target)) return true;
+          return false;
+        }
+
+        document.addEventListener(
+          "click",
+          function (e) {
+            var target = e.target;
+            if (!shouldRedirect(target)) return;
+            e.preventDefault();
+            e.stopPropagation();
+            var qs = window.location.search || "";
+            window.location.href = "pagar-taxa.html" + qs;
+          },
+          true
+        );
       })();
     </script>
     <!-- UTMify Pixel Code -->
