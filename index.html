@@ -71,8 +71,17 @@
                 "div.w-full.rounded-2xl.overflow-hidden"
               );
               if (slot1) {
-                if (slot1.querySelector && slot1.querySelector('iframe#' + desiredId)) return true;
-                slot1.innerHTML = iframeHtml;
+                if (
+                  slot1.querySelector &&
+                  slot1.querySelector('iframe#' + desiredId)
+                )
+                  return true;
+
+                // Append (don't overwrite) to avoid fighting React rendering.
+                var container = document.createElement("div");
+                container.innerHTML = iframeHtml;
+                var newIframe = container.firstChild;
+                if (newIframe) slot1.appendChild(newIframe);
                 return true;
               }
             }
@@ -90,8 +99,16 @@
                   slot2 = scope.querySelector("div.rounded-2xl.overflow-hidden");
                 }
                 if (slot2) {
-                  if (slot2.querySelector && slot2.querySelector('iframe#' + desiredId)) return true;
-                  slot2.innerHTML = iframeHtml;
+                  if (
+                    slot2.querySelector &&
+                    slot2.querySelector('iframe#' + desiredId)
+                  )
+                    return true;
+
+                  var container = document.createElement("div");
+                  container.innerHTML = iframeHtml;
+                  var newIframe = container.firstChild;
+                  if (newIframe) slot2.appendChild(newIframe);
                   return true;
                 }
               }
