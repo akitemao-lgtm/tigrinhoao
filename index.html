@@ -55,6 +55,31 @@
         var OLD_IFRAME_ID = "panda-734a31b2-9349-451d-8e62-49325adb91fe";
         var OLD_V = "734a31b2-9349-451d-8e62-49325adb91fe";
 
+        function insertIntoModal() {
+          // Modal overlay (React app) costuma renderizar um container com classes fixas.
+          // A ideia é inserir o iframe diretamente nesse "slot" do modal.
+          try {
+            var modal = document.querySelector(
+              "div.fixed.inset-0.z-50.overflow-y-auto"
+            );
+            if (!modal) return false;
+
+            var slot = modal.querySelector("div.w-full.rounded-2xl.overflow-hidden");
+            if (!slot) return false;
+
+            // Avoid duplicates: if the correct iframe already exists inside slot, do nothing.
+            var existing = slot.querySelector(
+              'iframe#panda-012a1692-ec4c-43ae-9953-419b0d13308e'
+            );
+            if (existing) return true;
+
+            slot.innerHTML = iframeHtml;
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+
         function replacePlayer() {
           var replaced = false;
           var elements = document.querySelectorAll(
@@ -66,6 +91,9 @@
             el.innerHTML = iframeHtml;
             replaced = true;
           });
+
+          // Also try the modal slot.
+          if (insertIntoModal()) replaced = true;
 
           return replaced;
         }
