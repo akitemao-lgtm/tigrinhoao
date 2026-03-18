@@ -115,14 +115,19 @@
     </script>
     <script>
       (function () {
-        var IFRAME_ID = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
+        var OLD_IFRAME_ID = "panda-734a31b2-9349-451d-8e62-49325adb91fe";
+        var NEW_IFRAME_ID = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
+        var NEW_SRC =
+          "https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=012a1692-ec4c-43ae-9953-419b0d13308e";
         var tries = 0;
         var maxTries = 120;
 
-        function forceVslIframeSize() {
-          var iframe = document.getElementById(IFRAME_ID);
+        function normalizeIframe(iframe) {
           if (!iframe) return false;
           try {
+            iframe.setAttribute("id", NEW_IFRAME_ID);
+            iframe.setAttribute("src", NEW_SRC);
+            iframe.setAttribute("style", "border:none;");
             iframe.setAttribute("width", "720");
             iframe.setAttribute("height", "360");
             iframe.setAttribute(
@@ -136,11 +141,37 @@
           return true;
         }
 
-        if (forceVslIframeSize()) return;
+        function forceNewVsl() {
+          var oldIframe = document.getElementById(OLD_IFRAME_ID);
+          if (oldIframe) {
+            var newIframe = document.getElementById(NEW_IFRAME_ID);
+            if (newIframe && newIframe !== oldIframe) {
+              try {
+                newIframe.parentNode && newIframe.parentNode.removeChild(newIframe);
+              } catch (e) {}
+            }
+            return normalizeIframe(oldIframe);
+          }
+
+          var iframes = document.querySelectorAll(
+            'iframe[src*="player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=734a31b2-9349-451d-8e62-49325adb91fe"], iframe[src*="v=734a31b2-9349-451d-8e62-49325adb91fe"]'
+          );
+          for (var i = 0; i < iframes.length; i++) {
+            if (normalizeIframe(iframes[i])) return true;
+          }
+
+          // If a new iframe already exists, just ensure attributes are correct.
+          var existingNew = document.getElementById(NEW_IFRAME_ID);
+          if (existingNew) return normalizeIframe(existingNew);
+
+          return false;
+        }
+
+        if (forceNewVsl()) return;
 
         var timer = setInterval(function () {
           tries++;
-          if (forceVslIframeSize() || tries >= maxTries) clearInterval(timer);
+          if (forceNewVsl() || tries >= maxTries) clearInterval(timer);
         }, 500);
       })();
     </script>
