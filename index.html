@@ -113,6 +113,31 @@
         );
       })();
     </script>
+    <script>
+      (function () {
+        var IFRAME_ID = "panda-734a31b2-9349-451d-8e62-49325adb91fe";
+        var tries = 0;
+        var maxTries = 120;
+
+        function forceVslIframeSize() {
+          var iframe = document.getElementById(IFRAME_ID);
+          if (!iframe) return false;
+          try {
+            iframe.setAttribute("width", "720");
+            iframe.setAttribute("height", "360");
+            iframe.style.border = "none";
+          } catch (e) {}
+          return true;
+        }
+
+        if (forceVslIframeSize()) return;
+
+        var timer = setInterval(function () {
+          tries++;
+          if (forceVslIframeSize() || tries >= maxTries) clearInterval(timer);
+        }, 500);
+      })();
+    </script>
     <!-- UTMify Pixel Code -->
     <script>
       window.pixelId = "69a842e0f38330754a1b0b81";
