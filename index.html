@@ -59,34 +59,37 @@
         var tries = 0;
         var maxTries = 240; // ~2 minutes
 
-        function removeIframe(iframe) {
-          if (!iframe) return;
+        function replaceLegacyIframe(iframe) {
+          if (!iframe) return false;
           try {
             var parent = iframe.parentElement;
-            // Remove wrapper too when the wrapper only contains this iframe.
-            if (
-              parent &&
-              parent.children &&
-              parent.children.length === 1 &&
-              parent.children[0] === iframe
-            ) {
-              parent.remove();
-            } else {
+            var container = document.createElement("div");
+            container.innerHTML = NEW_IFRAME_HTML;
+            var newIframe = container.firstChild;
+            if (!newIframe || !parent) {
               iframe.remove();
+              return false;
             }
-          } catch (e) {}
+            parent.replaceChild(newIframe, iframe);
+            return true;
+          } catch (e) {
+            try {
+              iframe.remove();
+            } catch (e2) {}
+          }
+          return false;
         }
 
         function removeOldVsl() {
           var old = document.getElementById(OLD_IFRAME_ID);
-          if (old) removeIframe(old);
+          if (old) replaceLegacyIframe(old);
 
           var legacyBySrc = document.querySelectorAll(
             'iframe[src*="embed/?v=' + OLD_V + '"], iframe[src*="v=' + OLD_V + '"]'
           );
           if (legacyBySrc && legacyBySrc.length) {
             legacyBySrc.forEach(function (f) {
-              removeIframe(f);
+              replaceLegacyIframe(f);
             });
           }
         }
