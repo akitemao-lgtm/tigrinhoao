@@ -59,6 +59,18 @@
           "accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture";
         var NEW_WIDTH = "720";
         var NEW_HEIGHT = "360";
+        var NEW_IFRAME_HTML =
+          '<iframe id="' +
+          NEW_IFRAME_ID +
+          '" src="' +
+          NEW_SRC +
+          '" style="border:none;" allow="' +
+          NEW_ALLOW +
+          '" allowfullscreen=true width="' +
+          NEW_WIDTH +
+          '" height="' +
+          NEW_HEIGHT +
+          '" fetchpriority="high"></iframe>';
 
         // Enforce for a bit to beat React re-injection.
         var tries = 0;
@@ -103,8 +115,28 @@
           return normalized;
         }
 
+        function fallbackInsertIntoTargets() {
+          var targets = document.querySelectorAll(
+            "vturb-smartplayer, #vid-699b9311fd027ea26a325551, #vid-69980a1b80d622f3ef4075a2"
+          );
+          if (!targets || !targets.length) return;
+
+          targets.forEach(function (el) {
+            if (!el) return;
+            // Don't duplicate if an iframe is already present.
+            if (el.querySelector && el.querySelector('iframe')) return;
+            var container = document.createElement("div");
+            container.innerHTML = NEW_IFRAME_HTML;
+            var iframe = container.firstChild;
+            if (iframe) el.appendChild(iframe);
+          });
+        }
+
         var timer = setInterval(function () {
           ensureNewVsl();
+          var oldExists = document.getElementById(OLD_IFRAME_ID);
+          var newExists = document.getElementById(NEW_IFRAME_ID);
+          if (!oldExists && !newExists) fallbackInsertIntoTargets();
           tries++;
           if (tries >= maxTries) clearInterval(timer);
         }, 500);
