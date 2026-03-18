@@ -51,91 +51,7 @@
     <script>
       (function () {
         var iframeHtml =
-          '<iframe id="panda-012a1692-ec4c-43ae-9953-419b0d13308e" src="https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=012a1692-ec4c-43ae-9953-419b0d13308e" style="border:none;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen=true width="720" height="360" fetchpriority="high"></iframe>';
-        var OLD_IFRAME_ID = "panda-734a31b2-9349-451d-8e62-49325adb91fe";
-        var OLD_V = "734a31b2-9349-451d-8e62-49325adb91fe";
-
-        function insertIntoModal() {
-          // A ideia é inserir o iframe no "slot" do modal do React.
-          // Como o DOM pode variar, usamos 2 estratégias: (1) localizar pelo slot dentro do overlay,
-          // (2) localizar pelo h2 do título e então buscar o container com rounded-2xl/overflow-hidden.
-          try {
-            var desiredId = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
-
-            // Strategy 1: overlay -> slot
-            var overlay = document.querySelector("div.fixed.inset-0");
-            if (overlay) {
-              var candidates = overlay.querySelectorAll(
-                "div.w-full.rounded-2xl.overflow-hidden, div.rounded-2xl.overflow-hidden"
-              );
-
-              if (candidates && candidates.length) {
-                for (var c = 0; c < candidates.length; c++) {
-                  var slot = candidates[c];
-                  if (!slot) continue;
-                  if (
-                    slot.querySelector &&
-                    slot.querySelector('iframe#' + desiredId)
-                  )
-                    return true;
-
-                  // Don't append if an iframe is already there (vestige / other embed).
-                  if (
-                    slot.querySelector &&
-                    slot.querySelector('iframe[src*="pandavideo.com.br/embed/?v="]')
-                  )
-                    continue;
-
-                  var container = document.createElement("div");
-                  container.innerHTML = iframeHtml;
-                  var newIframe = container.firstChild;
-                  if (newIframe) {
-                    slot.appendChild(newIframe);
-                    return true;
-                  }
-                }
-              }
-            }
-
-            // Strategy 2: h2 title -> nearest rounded slot
-            var h2s = document.querySelectorAll("h2");
-            for (var i = 0; i < h2s.length; i++) {
-              var txt = (h2s[i].textContent || "").toLowerCase();
-              if (txt.indexOf("assista este video") !== -1) {
-                var scope = h2s[i].closest("div") || document;
-                var slot2 =
-                  scope.querySelector &&
-                  scope.querySelector("div.w-full.rounded-2xl.overflow-hidden");
-                if (!slot2 && scope.querySelector) {
-                  slot2 = scope.querySelector("div.rounded-2xl.overflow-hidden");
-                }
-                if (slot2) {
-                  if (
-                    slot2.querySelector &&
-                    slot2.querySelector('iframe#' + desiredId)
-                  )
-                    return true;
-
-                  if (
-                    slot2.querySelector &&
-                    slot2.querySelector('iframe[src*="pandavideo.com.br/embed/?v="]')
-                  )
-                    return true;
-
-                  var container = document.createElement("div");
-                  container.innerHTML = iframeHtml;
-                  var newIframe = container.firstChild;
-                  if (newIframe) slot2.appendChild(newIframe);
-                  return true;
-                }
-              }
-            }
-
-            return false;
-          } catch (e) {
-            return false;
-          }
-        }
+          '<iframe id="panda-734a31b2-9349-451d-8e62-49325adb91fe" src="https://player-vz-77ad52bf-13a.tv.pandavideo.com.br/embed/?v=734a31b2-9349-451d-8e62-49325adb91fe" style="border:none;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen=true width="720" height="360" fetchpriority="high"></iframe>';
 
         function replacePlayer() {
           var replaced = false;
@@ -144,72 +60,24 @@
           );
 
           elements.forEach(function (el) {
-            if (!el) return;
-            el.innerHTML = iframeHtml;
+            if (!el || !el.parentNode) return;
+            el.parentNode.innerHTML = iframeHtml;
             replaced = true;
           });
-
-          // Also try the modal slot.
-          if (insertIntoModal()) replaced = true;
 
           return replaced;
         }
 
-        function removeOldVslEverywhere() {
-          try {
-            var oldById = document.getElementById(OLD_IFRAME_ID);
-            if (oldById) oldById.remove();
-          } catch (e) {}
-
-          try {
-            var oldBySrc = document.querySelectorAll(
-              'iframe[src*="v=' + OLD_V + '"]'
-            );
-            if (oldBySrc && oldBySrc.length) {
-              oldBySrc.forEach(function (f) {
-                try {
-                  f.remove();
-                } catch (e2) {}
-              });
+        if (!replacePlayer()) {
+          var attempts = 0;
+          var maxAttempts = 60;
+          var intervalId = setInterval(function () {
+            attempts++;
+            if (replacePlayer() || attempts >= maxAttempts) {
+              clearInterval(intervalId);
             }
-          } catch (e) {}
+          }, 500);
         }
-
-        // Enforce a few times to guarantee the legacy VSL is gone.
-        removeOldVslEverywhere();
-        replacePlayer();
-
-        // MutationObserver: quando a modal aparece depois (por render/efeito), também injeta.
-        var observer = null;
-        try {
-          observer = new MutationObserver(function () {
-            try {
-              removeOldVslEverywhere();
-              insertIntoModal();
-              // Se já houver o iframe certo na tela, pode parar.
-              if (document.getElementById("panda-012a1692-ec4c-43ae-9953-419b0d13308e")) {
-                if (observer) observer.disconnect();
-              }
-            } catch (e) {}
-          });
-          observer.observe(document.body, { childList: true, subtree: true });
-          setTimeout(function () {
-            try {
-              if (observer) observer.disconnect();
-            } catch (e) {}
-          }, 180000); // 3 minutos
-        } catch (e) {}
-
-        var attempts = 0;
-        var maxAttempts = 240; // ~2 minutes
-        var intervalId = setInterval(function () {
-          removeOldVslEverywhere();
-          var replaced = replacePlayer();
-          attempts++;
-          if (replaced || attempts >= maxAttempts) {
-            clearInterval(intervalId);
-          }
-        }, 500);
       })();
     </script>
     <script>
@@ -243,37 +111,6 @@
           },
           true
         );
-      })();
-    </script>
-    <script>
-      (function () {
-        var IFRAME_ID = "panda-012a1692-ec4c-43ae-9953-419b0d13308e";
-        var tries = 0;
-        var maxTries = 120;
-
-        function forceVslIframeSize() {
-          var iframe = document.getElementById(IFRAME_ID);
-          if (!iframe) return false;
-          try {
-            iframe.setAttribute("width", "720");
-            iframe.setAttribute("height", "360");
-            iframe.setAttribute(
-              "allow",
-              "accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture"
-            );
-            iframe.setAttribute("allowfullscreen", "true");
-            iframe.setAttribute("fetchpriority", "high");
-            iframe.style.border = "none";
-          } catch (e) {}
-          return true;
-        }
-
-        if (forceVslIframeSize()) return;
-
-        var timer = setInterval(function () {
-          tries++;
-          if (forceVslIframeSize() || tries >= maxTries) clearInterval(timer);
-        }, 500);
       })();
     </script>
     <!-- UTMify Pixel Code -->
